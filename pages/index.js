@@ -1,68 +1,143 @@
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { useState } from "react";
+import Head from "next/head";
+import styles from "../styles/Game.module.css";
 
-export default function Home() {
+const rowStyle = {
+  display: "flex",
+};
+
+const squareStyle = {
+  width: "60px",
+  height: "60px",
+  backgroundColor: "#ddd",
+  margin: "4px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  fontSize: "20px",
+  color: "white",
+};
+
+const boardStyle = {
+  backgroundColor: "#eee",
+  width: "208px",
+  alignItems: "center",
+  justifyContent: "center",
+  display: "flex",
+  flexDirection: "column",
+  border: "3px #eee solid",
+};
+
+const containerStyle = {
+  display: "flex",
+  alignItems: "center",
+  flexDirection: "column",
+};
+
+const instructionsStyle = {
+  marginTop: "5px",
+  marginBottom: "5px",
+  fontWeight: "bold",
+  fontSize: "16px",
+};
+
+const buttonStyle = {
+  marginTop: "15px",
+  marginBottom: "16px",
+  width: "80px",
+  height: "40px",
+  backgroundColor: "#8acaca",
+  color: "white",
+  fontSize: "16px",
+};
+
+function Square({ content, squareClick }) {
+  return (
+    <div className="square" style={squareStyle} onClick={squareClick}>
+      {content}
+    </div>
+  );
+}
+
+function Board() {
+  const [nextPlayer, setNextPlayer] = useState("X");
+  const [winner, setWinner] = useState("None");
+  const [content, setContent] = useState(["", "", "", "", "", "", "", "", ""]);
+
+  function handleSelection() {
+    setContent(nextPlayer === "X" ? "X" : "O");
+    setNextPlayer(nextPlayer === "X" ? "O" : "X");
+  }
+
+  function handleReset() {
+    setNextPlayer("X");
+    setWinner("None");
+    setContent(["", "", "", "", "", "", "", "", ""]);
+  }
+
+  function determineWinner() {}
+
+  return (
+    <div style={containerStyle} className="gameBoard">
+      <div id="statusArea" className="status" style={instructionsStyle}>
+        Next player: <span>{nextPlayer}</span>
+      </div>
+      <div id="winnerArea" className="winner" style={instructionsStyle}>
+        Winner: <span>{winner}</span>
+      </div>
+      <button style={buttonStyle}>Reset</button>
+      <div style={boardStyle}>
+        <div className="board-row" style={rowStyle}>
+          <Square content={content[0]} squareClick={() => handleSelection()} />
+          <Square content={content[1]} squareClick={() => handleSelection()} />
+          <Square content={content[2]} squareClick={() => handleSelection()} />
+        </div>
+        <div className="board-row" style={rowStyle}>
+          <Square content={content[3]} squareClick={() => handleSelection()} />
+          <Square content={content[4]} squareClick={() => handleSelection()} />
+          <Square content={content[5]} squareClick={() => handleSelection()} />
+        </div>
+        <div className="board-row" style={rowStyle}>
+          <Square content={content[6]} squareClick={() => handleSelection()} />
+          <Square content={content[7]} squareClick={() => handleSelection()} />
+          <Square content={content[8]} squareClick={() => handleSelection()} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Game() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Coderbyte Tic Tac Toe Game | Michael Attah</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
+      <main className="game">
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Coderbyte <br /> Tic Tac Toe Game
         </h1>
-
-        <p className={styles.description}>
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+        <div className="game-board">
+          <Board />
         </div>
       </main>
 
       <footer>
+        <span>Completed by</span>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://github.com/mikeattah/coderbyte-tic-tac-toe-game"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel" className={styles.logo} />
+          Michael Attah
         </a>
       </footer>
 
       <style jsx>{`
         main {
-          padding: 5rem 0;
+          padding: 2rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
@@ -71,14 +146,11 @@ export default function Home() {
         }
         footer {
           width: 100%;
-          height: 100px;
+          height: 50px;
           border-top: 1px solid #eaeaea;
           display: flex;
           justify-content: center;
           align-items: center;
-        }
-        footer img {
-          margin-left: 0.5rem;
         }
         footer a {
           display: flex;
@@ -86,14 +158,6 @@ export default function Home() {
           align-items: center;
           text-decoration: none;
           color: inherit;
-        }
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
         }
       `}</style>
 
@@ -111,5 +175,5 @@ export default function Home() {
         }
       `}</style>
     </div>
-  )
+  );
 }
