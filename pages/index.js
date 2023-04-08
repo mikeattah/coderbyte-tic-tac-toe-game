@@ -2,6 +2,14 @@ import { useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Game.module.css";
 
+/*
+A B C
+D E F
+G H I
+
+ABC, DEF, GHI, ADG, BEH, CFI, CEG, AEI
+*/
+
 const rowStyle = {
   display: "flex",
 };
@@ -15,7 +23,6 @@ const squareStyle = {
   justifyContent: "center",
   alignItems: "center",
   fontSize: "20px",
-  color: "white",
 };
 
 const boardStyle = {
@@ -47,14 +54,13 @@ const buttonStyle = {
   width: "80px",
   height: "40px",
   backgroundColor: "#8acaca",
-  color: "white",
   fontSize: "16px",
 };
 
-function Square({ content, squareClick }) {
+function Square({ squareContent, squareClick }) {
   return (
-    <div className="square" style={squareStyle} onClick={squareClick}>
-      {content}
+    <div className={styles.square} style={squareStyle} onClick={squareClick}>
+      {squareContent}
     </div>
   );
 }
@@ -62,20 +68,127 @@ function Square({ content, squareClick }) {
 function Board() {
   const [nextPlayer, setNextPlayer] = useState("X");
   const [winner, setWinner] = useState("None");
-  const [content, setContent] = useState(["", "", "", "", "", "", "", "", ""]);
+  const [squareAValue, setSquareAValue] = useState("");
+  const [squareBValue, setSquareBValue] = useState("");
+  const [squareCValue, setSquareCValue] = useState("");
+  const [squareDValue, setSquareDValue] = useState("");
+  const [squareEValue, setSquareEValue] = useState("");
+  const [squareFValue, setSquareFValue] = useState("");
+  const [squareGValue, setSquareGValue] = useState("");
+  const [squareHValue, setSquareHValue] = useState("");
+  const [squareIValue, setSquareIValue] = useState("");
 
-  function handleSelection() {
-    setContent(nextPlayer === "X" ? "X" : "O");
-    setNextPlayer(nextPlayer === "X" ? "O" : "X");
+  const winningCombinations = [
+    "ABC",
+    "DEF",
+    "GHI",
+    "ADG",
+    "BEH",
+    "CFI",
+    "CEG",
+    "AEI",
+  ];
+
+  const positions = {
+    A: "",
+    B: "",
+    C: "",
+    D: "",
+    E: "",
+    F: "",
+    G: "",
+    H: "",
+    I: "",
+  };
+
+  let playerXMoves = "",
+    playerOMoves = "";
+
+  /**
+   * Handle player selection
+   * @param {String} position
+   * @param {String} player
+   */
+  function handleSelection(position, player) {
+    positions[position] = player;
+    switch (position) {
+      case "A":
+        if (squareAValue === "") {
+          setSquareAValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "B":
+        if (squareBValue === "") {
+          setSquareBValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "C":
+        if (squareCValue === "") {
+          setSquareCValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "D":
+        if (squareDValue === "") {
+          setSquareDValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "E":
+        if (squareEValue === "") {
+          setSquareEValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "F":
+        if (squareFValue === "") {
+          setSquareFValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "G":
+        if (squareGValue === "") {
+          setSquareGValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "H":
+        if (squareHValue === "") {
+          setSquareHValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      case "I":
+        if (squareIValue === "") {
+          setSquareIValue(player);
+          setNextPlayer(nextPlayer === "X" ? "O" : "X");
+        }
+        break;
+      default:
+        break;
+    }
+    // for (const { pos, pyr } in positions) {
+    // }
+    // setNextPlayer("Click 'Reset'!!");
   }
 
   function handleReset() {
+    setSquareAValue("");
+    setSquareBValue("");
+    setSquareCValue("");
+    setSquareDValue("");
+    setSquareEValue("");
+    setSquareFValue("");
+    setSquareGValue("");
+    setSquareHValue("");
+    setSquareIValue("");
     setNextPlayer("X");
     setWinner("None");
-    setContent(["", "", "", "", "", "", "", "", ""]);
   }
 
-  function determineWinner() {}
+  function declareWinner() {}
 
   return (
     <div style={containerStyle} className="gameBoard">
@@ -85,22 +198,55 @@ function Board() {
       <div id="winnerArea" className="winner" style={instructionsStyle}>
         Winner: <span>{winner}</span>
       </div>
-      <button style={buttonStyle}>Reset</button>
+      <button
+        className={styles.button}
+        style={buttonStyle}
+        onClick={() => handleReset()}
+      >
+        Reset
+      </button>
       <div style={boardStyle}>
         <div className="board-row" style={rowStyle}>
-          <Square content={content[0]} squareClick={() => handleSelection()} />
-          <Square content={content[1]} squareClick={() => handleSelection()} />
-          <Square content={content[2]} squareClick={() => handleSelection()} />
+          <Square
+            squareContent={squareAValue}
+            squareClick={() => handleSelection("A", nextPlayer)}
+          />
+          <Square
+            squareContent={squareBValue}
+            squareClick={() => handleSelection("B", nextPlayer)}
+          />
+          <Square
+            squareContent={squareCValue}
+            squareClick={() => handleSelection("C", nextPlayer)}
+          />
         </div>
         <div className="board-row" style={rowStyle}>
-          <Square content={content[3]} squareClick={() => handleSelection()} />
-          <Square content={content[4]} squareClick={() => handleSelection()} />
-          <Square content={content[5]} squareClick={() => handleSelection()} />
+          <Square
+            squareContent={squareDValue}
+            squareClick={() => handleSelection("D", nextPlayer)}
+          />
+          <Square
+            squareContent={squareEValue}
+            squareClick={() => handleSelection("E", nextPlayer)}
+          />
+          <Square
+            squareContent={squareFValue}
+            squareClick={() => handleSelection("F", nextPlayer)}
+          />
         </div>
         <div className="board-row" style={rowStyle}>
-          <Square content={content[6]} squareClick={() => handleSelection()} />
-          <Square content={content[7]} squareClick={() => handleSelection()} />
-          <Square content={content[8]} squareClick={() => handleSelection()} />
+          <Square
+            squareContent={squareGValue}
+            squareClick={() => handleSelection("G", nextPlayer)}
+          />
+          <Square
+            squareContent={squareHValue}
+            squareClick={() => handleSelection("H", nextPlayer)}
+          />
+          <Square
+            squareContent={squareIValue}
+            squareClick={() => handleSelection("I", nextPlayer)}
+          />
         </div>
       </div>
     </div>
@@ -130,6 +276,7 @@ export default function Game() {
           href="https://github.com/mikeattah/coderbyte-tic-tac-toe-game"
           target="_blank"
           rel="noopener noreferrer"
+          className={styles.link}
         >
           Michael Attah
         </a>
