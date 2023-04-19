@@ -91,15 +91,67 @@ function Board() {
   ]);
 
   /**
-   * Search board for a winner and return true/false
+   * Search board for a winner and declare winner as player 'X' or 'O'
    *
    * @param {String} player
-   * @return {Boolean}
    */
   function declareWinner(player) {
     console.log(board);
+    const brd = [
+      ["A", "B", "C"],
+      ["D", "E", "F"],
+      ["G", "H", "I"],
+    ];
+    let i = 0,
+      j = 0,
+      k = 0,
+      chk = false;
 
-    return false;
+    while (i < brd.length) {
+      // looping through columns and diadonals
+      if (i === 0) {
+        // left-to-right diagonal
+
+        // columns
+        while (k < brd[i].length) {
+          j = 0;
+          while (j < brd.length) {
+            if (brd[j][k] !== player) break;
+            if (j === brd.length) chk = true;
+            j++;
+          }
+
+          // right-to-left diagonal
+          if (k === brd[i].length) {
+            j = 0;
+            while (k--) {
+              while (j < brd.length) {
+                if (brd[j][k] !== player) break;
+                if (j === brd.length) chk = true;
+                j++;
+              }
+            }
+            k = brd[i].length - 1;
+          }
+          k++;
+        }
+      }
+
+      // looping through rows
+      j = 0;
+      while (j < brd[i].length) {
+        if (brd[i][j] !== player) break;
+        if (j === brd[i].length) chk = true;
+        j++;
+      }
+      i++;
+    }
+
+    if (chk) {
+      setWinner(player);
+      // release confetti
+      // blink squares that contain the winning combinations
+    }
   }
 
   /**
@@ -145,10 +197,10 @@ function Board() {
 
       switch (player) {
         case "X":
-          if (declareWinner("X")) setWinner("X");
+          declareWinner("X");
           break;
         case "O":
-          if (declareWinner("O")) setWinner("O");
+          declareWinner("O");
           break;
         default:
           break;
@@ -158,6 +210,9 @@ function Board() {
     }
   }
 
+  /**
+   * Reset game to default settings
+   */
   function handleReset() {
     setNextPlayer("X");
     setWinner("None");
