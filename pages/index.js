@@ -70,7 +70,7 @@ function Board() {
   const [squareHValue, setSquareHValue] = useState("");
   const [squareIValue, setSquareIValue] = useState("");
 
-  let board;
+  let board = [];
 
   useEffect(() => {
     board = [
@@ -97,41 +97,54 @@ function Board() {
    */
   function declareWinner(player) {
     console.log(board);
-    const brd = [
-      ["A", "B", "C"],
-      ["D", "E", "F"],
-      ["G", "H", "I"],
-    ];
+    /*
+    [
+      ["X", "O", "O"],
+      ["O", "X", "X"],
+      ["O", "X", "X"],
+    ]
+    */
     let i = 0,
       j = 0,
       k = 0,
-      chk = false;
+      l = 0,
+      win = false;
 
-    while (i < brd.length) {
-      // looping through columns and diadonals
+    while (i < board.length) {
+      // looping through columns and diagonals
       if (i === 0) {
-        // left-to-right diagonal
+        k = i;
+        while (k < board[i].length) {
+          // looping through topleft-to-botright diagonal
+          if (k === 0) {
+            j = k;
+            l = k;
+            while (j < board.length) {
+              if (board[j][l] !== player || win) break; // also `break` if win = true
+              if (j === board.length - 1) win = true;
+              j++;
+              l++;
+            }
+          }
 
-        // columns
-        while (k < brd[i].length) {
+          // looping through columns
           j = 0;
-          while (j < brd.length) {
-            if (brd[j][k] !== player) break;
-            if (j === brd.length) chk = true;
+          while (j < board.length) {
+            if (board[j][k] !== player || win) break; // also `break` if win = true
+            if (j === board.length - 1) win = true;
             j++;
           }
 
-          // right-to-left diagonal
-          if (k === brd[i].length) {
+          // looping through topright-to-botleft diagonal
+          if (k === board[i].length - 1) {
             j = 0;
-            while (k--) {
-              while (j < brd.length) {
-                if (brd[j][k] !== player) break;
-                if (j === brd.length) chk = true;
-                j++;
-              }
+            l = k;
+            while (j < board.length) {
+              if (board[j][l] !== player || win) break; // also `break` if win = true
+              if (j === board.length - 1) win = true;
+              j++;
+              l--;
             }
-            k = brd[i].length - 1;
           }
           k++;
         }
@@ -139,15 +152,16 @@ function Board() {
 
       // looping through rows
       j = 0;
-      while (j < brd[i].length) {
-        if (brd[i][j] !== player) break;
-        if (j === brd[i].length) chk = true;
+      while (j < board[i].length) {
+        if (board[i][j] !== player || win) break; // also `break` if win = true
+        if (j === board[i].length - 1) win = true;
         j++;
       }
+
       i++;
     }
 
-    if (chk) {
+    if (win) {
       setWinner(player);
       // release confetti
       // blink squares that contain the winning combinations
@@ -195,17 +209,7 @@ function Board() {
           break;
       }
 
-      switch (player) {
-        case "X":
-          declareWinner("X");
-          break;
-        case "O":
-          declareWinner("O");
-          break;
-        default:
-          break;
-      }
-
+      declareWinner(player);
       setNextPlayer(nextPlayer === "X" ? "O" : "X");
     }
   }
