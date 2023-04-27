@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Game.module.css";
+import Confetti from "../components/templates/Confetti/Confetti";
 
 const rowStyle = {
   display: "flex",
@@ -49,6 +50,12 @@ const buttonStyle = {
   fontSize: "16px",
 };
 
+let board = [
+  ["", "", ""],
+  ["", "", ""],
+  ["", "", ""],
+];
+
 function Square({ squareContent, squareClick }) {
   return (
     <div className={styles.square} style={squareStyle} onClick={squareClick}>
@@ -69,41 +76,14 @@ function Board() {
   const [squareGValue, setSquareGValue] = useState("");
   const [squareHValue, setSquareHValue] = useState("");
   const [squareIValue, setSquareIValue] = useState("");
-
-  let board = [];
-
-  useEffect(() => {
-    board = [
-      [squareAValue, squareBValue, squareCValue],
-      [squareDValue, squareEValue, squareFValue],
-      [squareGValue, squareHValue, squareIValue],
-    ];
-  }, [
-    squareAValue,
-    squareBValue,
-    squareCValue,
-    squareDValue,
-    squareEValue,
-    squareFValue,
-    squareGValue,
-    squareHValue,
-    squareIValue,
-  ]);
+  const [isVisible, setIsVisible] = useState(false);
 
   /**
    * Search board for a winner and declare winner as player 'X' or 'O'
    *
    * @param {String} player
    */
-  function declareWinner(player) {
-    console.log(board);
-    /*
-    [
-      ["X", "O", "O"],
-      ["O", "X", "X"],
-      ["O", "X", "X"],
-    ]
-    */
+  const declareWinner = (player) => {
     let i = 0,
       j = 0,
       k = 0,
@@ -120,7 +100,7 @@ function Board() {
             j = k;
             l = k;
             while (j < board.length) {
-              if (board[j][l] !== player || win) break; // also `break` if win = true
+              if (win || board[j][l] !== player) break;
               if (j === board.length - 1) win = true;
               j++;
               l++;
@@ -130,7 +110,7 @@ function Board() {
           // looping through columns
           j = 0;
           while (j < board.length) {
-            if (board[j][k] !== player || win) break; // also `break` if win = true
+            if (win || board[j][k] !== player) break;
             if (j === board.length - 1) win = true;
             j++;
           }
@@ -140,7 +120,7 @@ function Board() {
             j = 0;
             l = k;
             while (j < board.length) {
-              if (board[j][l] !== player || win) break; // also `break` if win = true
+              if (win || board[j][l] !== player) break;
               if (j === board.length - 1) win = true;
               j++;
               l--;
@@ -153,7 +133,7 @@ function Board() {
       // looping through rows
       j = 0;
       while (j < board[i].length) {
-        if (board[i][j] !== player || win) break; // also `break` if win = true
+        if (win || board[i][j] !== player) break;
         if (j === board[i].length - 1) win = true;
         j++;
       }
@@ -163,10 +143,9 @@ function Board() {
 
     if (win) {
       setWinner(player);
-      // release confetti
-      // blink squares that contain the winning combinations
+      setIsVisible(true); // release confetti
     }
-  }
+  };
 
   /**
    * Handle player selection when a square is clicked
@@ -175,35 +154,44 @@ function Board() {
    * @param {String} position
    * @param {String} player
    */
-  function handleSelection(value, position, player) {
-    if (value === "") {
+  const handleSelection = (value, position, player) => {
+    if (winner === "None" && value === "") {
       switch (position) {
         case "A":
           setSquareAValue(player);
+          board[0][0] = player;
           break;
         case "B":
           setSquareBValue(player);
+          board[0][1] = player;
           break;
         case "C":
           setSquareCValue(player);
+          board[0][2] = player;
           break;
         case "D":
           setSquareDValue(player);
+          board[1][0] = player;
           break;
         case "E":
           setSquareEValue(player);
+          board[1][1] = player;
           break;
         case "F":
           setSquareFValue(player);
+          board[1][2] = player;
           break;
         case "G":
           setSquareGValue(player);
+          board[2][0] = player;
           break;
         case "H":
           setSquareHValue(player);
+          board[2][1] = player;
           break;
         case "I":
           setSquareIValue(player);
+          board[2][2] = player;
           break;
         default:
           break;
@@ -212,12 +200,12 @@ function Board() {
       declareWinner(player);
       setNextPlayer(nextPlayer === "X" ? "O" : "X");
     }
-  }
+  };
 
   /**
    * Reset game to default settings
    */
-  function handleReset() {
+  const handleReset = () => {
     setNextPlayer("X");
     setWinner("None");
     setSquareAValue("");
@@ -229,7 +217,13 @@ function Board() {
     setSquareGValue("");
     setSquareHValue("");
     setSquareIValue("");
-  }
+    setIsVisible(false);
+    board = [
+      ["", "", ""],
+      ["", "", ""],
+      ["", "", ""],
+    ];
+  };
 
   return (
     <div style={containerStyle} className="gameBoard">
@@ -290,6 +284,7 @@ function Board() {
           />
         </div>
       </div>
+      {isVisible && <Confetti />}
     </div>
   );
 }
@@ -344,8 +339,6 @@ export default function Game() {
           display: flex;
           justify-content: center;
           align-items: center;
-          text-decoration: none;
-          color: inherit;
         }
       `}</style>
 
